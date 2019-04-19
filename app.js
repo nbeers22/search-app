@@ -3,7 +3,7 @@ class Search {
     this.searchStr     = searchStr;
     this.type          = type;
     this.url           = url;
-    this.dictionaryURL = `https://api.pearson.com/v2/dictionaries/ldoce5/entries?limit=2&headword=${this.searchStr}&apikey=vd6eycmGfc37Gl40gxgZTvIjMVrZ5P33`;
+    this.dictionaryURL = `https://api.pearson.com/v2/dictionaries/ldoce5/entries?limit=2&headword=${this.searchStr}&apikey=${config.DICTIONARY_KEY}`;
   }
   
   decideType(){
@@ -11,7 +11,7 @@ class Search {
     switch (this.type) {
       case 'page':
       case '':
-        this.url = `https://www.googleapis.com/customsearch/v1?cx=008446815321438153834:5okybrne5hw&q=${this.searchStr}&key=AIzaSyAUcuxSCoEbnPZ5POSgdpXuwDztOnd1qUM`;
+        this.url = `https://www.googleapis.com/customsearch/v1?cx=008446815321438153834:5okybrne5hw&q=${this.searchStr}&key=${config.GOOGLE_SEARCH_KEY}`;
         break;
 
       case 'image':
