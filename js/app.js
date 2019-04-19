@@ -76,9 +76,10 @@ class Page extends Search{
     const dictionary = document.getElementById('dictionary-result');
     const search     = document.getElementById('search-results');
     const numResults = document.getElementById('num-results');
-
+    
+    // clear results
     dictionary.innerHTML = "";
-    search.innerHTML = "";
+    search.innerHTML     = "";
     numResults.innerHTML = "";
 
     keyword.innerText = this.searchStr;
@@ -108,6 +109,8 @@ class Page extends Search{
     });
 
     search.insertAdjacentHTML('beforeend',searchHTML)
+
+    document.getElementById('results').classList.add('show');
   }
   
 }

@@ -1,0 +1,53 @@
+.container{
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+#results{
+  height: 0;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+nav ul{
+  list-style-type: none;
+  display: flex;
+  padding-left: 0;
+}
+
+nav ul li{
+  padding: 0 5px;
+  border-bottom: 2px solid transparent;
+}
+
+nav ul li a{
+  text-decoration: none;
+  color: #333;
+  padding: 10px;
+  display: inline-block;
+}
+
+nav ul li.active{
+  border-color: blue;
+}
+
+nav ul li.active a{
+  color: blue;
+  font-weight: 600;
+}
+
+#results.show{
+  height: auto;
+  opacity: 1;
+}
+
+#dictionary-result{
+  border: 2px solid #CCC;
+  padding: 20px;
+}
+
+.search-item{
+  border: 1px solid blue;
+  padding: 20px;
+}

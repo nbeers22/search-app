@@ -5,7 +5,7 @@
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <title>Web Finder</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <link rel='stylesheet' type='text/css' media='screen' href='app.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/app.css'>
 </head>
 <body>
   <header>
@@ -28,14 +28,21 @@
         <button id="submit" type="submit">Search</button>
       </form>
     </div>
-    <section id="results" class="container hide">
+    <section id="results" class="container">
       <h2>Results for: <span id="keyword"></span></h2>
+      <nav>
+        <ul>
+          <li class="active"><a href="#">Pages</a></li>
+          <li><a href="#">Images</a></li>
+          <li><a href="#">Videos</a></li>
+        </ul>
+      </nav>
       <aside id="dictionary-result"></aside>
       <cite id="num-results"></cite>
       <aside id="search-results"></aside>
     </section>
   </main>
-  <script src='config.js'></script>
-  <script src='app.js'></script>
+  <script src='js/config.js'></script>
+  <script src='js/app.js'></script>
 </body>
 </html>
