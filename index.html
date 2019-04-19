@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Web Finder</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='app.css'>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Web Finder</h1>
+      <h4>Search for web pages, images, videos and more!</h4>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+      <form id="searchform">
+        <label for="search">Enter a keyword or phrase to search for</label>
+        <input type="text" id="search" required>
+        <!-- <label for="type">Type</label>
+        <select name="type" id="type">
+          <option value="page" selected>Web Pages</option>
+          <option value="image">Images</option>
+          <option value="video">Videos</option>
+        </select> -->
+        <button id="submit" type="submit">Search</button>
+      </form>
+    </div>
+    <section id="results" class="container hide">
+      <h2>Results for: <span id="keyword"></span></h2>
+      <aside id="dictionary-result"></aside>
+      <cite id="num-results"></cite>
+      <aside id="search-results"></aside>
+    </section>
+  </main>
+  <script src='app.js'></script>
+</body>
+</html>

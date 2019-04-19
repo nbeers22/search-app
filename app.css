@@ -1,0 +1,9 @@
+#dictionary-result{
+  border: 2px solid #CCC;
+  padding: 20px;
+}
+
+.search-item{
+  border: 1px solid blue;
+  padding: 20px;
+}
