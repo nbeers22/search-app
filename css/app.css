@@ -1,3 +1,19 @@
+body{
+  height: 100%;
+}
+
+.modal-open{
+  position: fixed;
+}
+
+.modal-open .modal-overlay{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
 .container{
   max-width: 1200px;
   margin: auto;
@@ -61,6 +77,10 @@ nav li.active a{
   margin: 15px;
 }
 
+.video-block{
+  cursor: pointer;
+}
+
 .image-item{
   display: inline-block;
   width: 100%;
@@ -68,4 +88,69 @@ nav li.active a{
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+.video-item{
+  position: relative;
+}
+
+#play-video{
+  max-width:50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+#video-iframe{
+  height: 0;
+  width: 100%;
+}
+  
+#video-modal{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 90%;
+  max-width: 600px;
+  height: 0;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  z-index: 2;
+}
+
+#modal-close{
+  color: #FFF;
+  font-weight: bold;
+  font-size: 28px;
+  position: absolute;
+  top: 15px;
+  right: 0px;
+  background-color: transparent;
+  border-radius: 5px;
+  border: 2px solid #FFF;
+  line-height: 1;
+  z-index: 2;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out
+}
+
+#modal-close:hover{
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+#modal-title{
+  color: #FFF;
+  max-width: 80%;
+}
+
+.modal-open #video-modal{
+  height: auto;
+  opacity: 1;
+}
+
+.modal-open #video-iframe{
+  height: 315px;
 }

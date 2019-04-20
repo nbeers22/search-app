@@ -16,12 +16,13 @@ class Search {
 
       case 'image':
         // FlICKER API URL GOES HERE
-        this.url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${config.FLICKER_KEY}&text=${this.searchStr}&per_page=24&page=1&format=json&nojsoncallback=1&extras=url_o`;
+        // this.url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${config.FLICKER_KEY}&text=${this.searchStr}&per_page=24&page=1&format=json&nojsoncallback=1&extras=url_o`;
+        this.url = `https://api.unsplash.com/search/photos?page=1&query=${this.searchStr}&per_page=20&client_id=${config.UNSPLASH_KEY}`
         break;
 
       case 'video':
         // YOUTUBE API URL GOES HERE
-        this.url = ``;
+        this.url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.searchStr}&key=${config.YOUTUBE_KEY}`;
         break;
     }
     this.getResults(this.url);
@@ -39,15 +40,13 @@ class Search {
             break;
 
           case 'image':
-            // FlICKER API URL GOES HERE
-            const image = new Image(data,this.searchStr);
+            const image = new Image(data);
             image.showResults();
             break;
 
           case 'video':
-            // YOUTUBE API URL GOES HERE
-            this.url = ``;
-            // const video = new Video(data.items);
+            const video = new Video(data);
+            video.showResults();
             break;
         }
       });
@@ -113,10 +112,9 @@ class Page extends Search{
 }
 
 class Image extends Search {
-  constructor(results, searchStr) {
+  constructor(results) {
     super();
     this.results = results;
-    this.searchStr = searchStr;
   }
 
   showResults(){
@@ -129,13 +127,13 @@ class Image extends Search {
     numResults.innerHTML = '';
     dictionary.innerHTML = '';
 
-    numResults.innerHTML = `Total results: ${+this.results.photos.total}`;
-
-    this.results.photos.photo.forEach((element, i) => {
+    numResults.innerHTML = `Total results: ${this.results.total}`;
+    
+    this.results.results.forEach((element, i) => {
       imagesHTML += `
         <figure class="image-block">
-          <div class="image-item" style="background-image: url(${element.url_o})"></div>
-          <p class="image-title">${element.title}</p>
+          <div class="image-item" style="background-image: url(${element.urls.regular})"></div>
+          <p class="image-title">${element.description}</p>
         </figure>
       `
     });
@@ -145,7 +143,39 @@ class Image extends Search {
 }
 
 class Video extends Search {
+  constructor(results) {
+    super();
+    this.results = results;
+  }
 
+  showResults(){
+    let videosHTML   = '';
+    const search     = document.getElementById('search-results');
+    const numResults = document.getElementById('num-results');
+    const dictionary = document.getElementById('dictionary-result');
+
+    search.innerHTML     = '';
+    numResults.innerHTML = '';
+    dictionary.innerHTML = '';
+
+    numResults.innerHTML = `Total results: ${this.results.pageInfo.totalResults}`;
+    
+    this.results.items.forEach((element, i) => {
+      videosHTML += `
+        <figure class="image-block video-block">
+          <div class="image-item video-item" data-modal="video-modal" data-embed="https://www.youtube.com/embed/${element.id.videoId}" data-title="${element.snippet.title}" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url(${element.snippet.thumbnails.high.url});">
+            <svg class="video-overlay-play-button" viewBox="0 0 200 200" alt="Play video" id="play-video">
+              <circle cx="100" cy="100" r="90" fill="none" stroke-width="15" stroke="#FFF"/>
+              <polygon points="70, 55 70, 145 145, 100" fill="#FFF"/>
+            </svg>
+          </div>
+          <p class="image-title">${element.snippet.title}</p>
+        </figure>
+      `
+    });
+
+    search.insertAdjacentHTML('beforeend', videosHTML)
+  }
 }
 
 const searchHandler = () => {
@@ -163,24 +193,52 @@ const searchHandler = () => {
   });
 }
 
+const openModal = (title,embedURL) => {
+  console.log('open modal')
+  document.querySelector('body').classList.add('modal-open');
+  document.getElementById('modal-title').innerText = title;
+  document.getElementById('video-iframe').src = embedURL;
+  document.getElementById('video-modal').style.height = "auto";
+}
+
+const closeModal = () => {
+  console.log('closing')
+  document.querySelector('body').classList.remove('modal-open');
+  document.getElementById('video-iframe').src = "";
+  document.getElementById('video-modal').style.height = 0;
+}
+
 const navHandler = (type) => {
   let searchStr = document.getElementById('search').value;
   const search = new Search(searchStr,type);
   search.decideType();
 }
 
-const navListener = () => {
+const eventListener = () => {
   document.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // switch active nav item
     if (event.target.matches('.menu-item')) {
-      event.preventDefault();
+      document.querySelector('nav').querySelectorAll('li').forEach(element => {
+        element.classList.remove('active');
+      });
+      event.target.parentElement.classList.add('active');
       navHandler(event.target.dataset.type);
+    // Open video modal
+    } else if (event.target.matches('.video-item')){
+      openModal(event.target.dataset.title, event.target.dataset.embed);
+    // Closes video modal
+    } else if (event.target.matches('#modal-close')){
+      closeModal();
     }
+
   }, false);
 }
 
 const init = () => {
   searchHandler();
-  navListener();
+  eventListener();
 }
 
 init();
