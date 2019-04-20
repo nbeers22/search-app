@@ -16,7 +16,7 @@ class Search {
 
       case 'image':
         // FlICKER API URL GOES HERE
-        this.url = ``;
+        this.url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${config.FLICKER_KEY}&text=${this.searchStr}&per_page=24&page=1&format=json&nojsoncallback=1`;
         break;
 
       case 'video':
@@ -40,14 +40,14 @@ class Search {
 
           case 'image':
             // FlICKER API URL GOES HERE
-            this.url = ``;
-            const image = new Image(data.items);
+            console.log(data);
+            // const image = new Image(data.items);
             break;
 
           case 'video':
             // YOUTUBE API URL GOES HERE
             this.url = ``;
-            const video = new Video(data.items);
+            // const video = new Video(data.items);
             break;
         }
       });
@@ -138,8 +138,24 @@ const searchHandler = () => {
   });
 }
 
+const navHandler = (type) => {
+  let searchStr = document.getElementById('search').value;
+  const search = new Search(searchStr,type);
+  search.decideType();
+}
+
+const navListener = () => {
+  document.addEventListener('click', function (event) {
+    if (event.target.matches('.menu-item')) {
+      event.preventDefault();
+      navHandler(event.target.dataset.type);
+    }
+  }, false);
+}
+
 const init = () => {
   searchHandler();
+  navListener();
 }
 
 init();
