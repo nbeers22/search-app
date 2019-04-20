@@ -42,6 +42,11 @@ nav li.active a{
   opacity: 1;
 }
 
+#search-results{
+  display: flex;
+  flex-wrap: wrap;
+}
+
 #dictionary-result{
   border: 2px solid #CCC;
   padding: 20px;
@@ -50,4 +55,17 @@ nav li.active a{
 .search-item{
   border: 1px solid blue;
   padding: 20px;
+}
+.image-block{
+  flex-basis: calc(25% - 30px);
+  margin: 15px;
+}
+
+.image-item{
+  display: inline-block;
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }

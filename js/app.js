@@ -16,7 +16,7 @@ class Search {
 
       case 'image':
         // FlICKER API URL GOES HERE
-        this.url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${config.FLICKER_KEY}&text=${this.searchStr}&per_page=24&page=1&format=json&nojsoncallback=1`;
+        this.url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${config.FLICKER_KEY}&text=${this.searchStr}&per_page=24&page=1&format=json&nojsoncallback=1&extras=url_o`;
         break;
 
       case 'video':
@@ -40,8 +40,8 @@ class Search {
 
           case 'image':
             // FlICKER API URL GOES HERE
-            console.log(data);
-            // const image = new Image(data.items);
+            const image = new Image(data,this.searchStr);
+            image.showResults();
             break;
 
           case 'video':
@@ -72,7 +72,6 @@ class Page extends Search{
 
   showResults(dictionaryResults){
     let searchHTML = '';
-    const keyword    = document.getElementById('keyword');
     const dictionary = document.getElementById('dictionary-result');
     const search     = document.getElementById('search-results');
     const numResults = document.getElementById('num-results');
@@ -81,8 +80,6 @@ class Page extends Search{
     dictionary.innerHTML = "";
     search.innerHTML     = "";
     numResults.innerHTML = "";
-
-    keyword.innerText = this.searchStr;
 
     // console.log(dictionaryResults)
     if (dictionaryResults.length > 0) {
@@ -116,7 +113,35 @@ class Page extends Search{
 }
 
 class Image extends Search {
+  constructor(results, searchStr) {
+    super();
+    this.results = results;
+    this.searchStr = searchStr;
+  }
 
+  showResults(){
+    let imagesHTML   = '';
+    const search     = document.getElementById('search-results');
+    const numResults = document.getElementById('num-results');
+    const dictionary = document.getElementById('dictionary-result');
+
+    search.innerHTML     = '';
+    numResults.innerHTML = '';
+    dictionary.innerHTML = '';
+
+    numResults.innerHTML = `Total results: ${+this.results.photos.total}`;
+
+    this.results.photos.photo.forEach((element, i) => {
+      imagesHTML += `
+        <figure class="image-block">
+          <div class="image-item" style="background-image: url(${element.url_o})"></div>
+          <p class="image-title">${element.title}</p>
+        </figure>
+      `
+    });
+
+    search.insertAdjacentHTML('beforeend', imagesHTML)
+  }
 }
 
 class Video extends Search {
