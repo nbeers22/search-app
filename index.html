@@ -5,11 +5,12 @@
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <title>Web Finder</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
   <link rel='stylesheet' type='text/css' media='screen' href='css/normalize.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='css/app.css'>
 </head>
 <body>
-  <div class="modal-overlay"></div>
+  <div class="modal-overlay" onclick="closeModal()"></div>
   <header>
     <div class="container">
       <h1>Web Finder</h1>
@@ -53,7 +54,7 @@
       <h3 id="modal-title"></h3>
       <iframe id="video-iframe" src="" frameborder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <button id="modal-close">&times;</button>
+        <button id="modal-close" onclick="closeModal()">&times;</button>
     </aside>
   </main>
   <script src='js/config.js'></script>

@@ -3,7 +3,7 @@ class Search {
     this.searchStr     = searchStr;
     this.type          = type;
     this.url           = url;
-    this.dictionaryURL = `https://api.pearson.com/v2/dictionaries/ldoce5/entries?limit=2&headword=${this.searchStr}&apikey=${config.DICTIONARY_KEY}`;
+    this.dictionaryURL = `https://googledictionaryapi.eu-gb.mybluemix.net/?define=${this.searchStr}&lang=en`;
   }
   
   decideType(){
@@ -15,13 +15,10 @@ class Search {
         break;
 
       case 'image':
-        // FlICKER API URL GOES HERE
-        // this.url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${config.FLICKER_KEY}&text=${this.searchStr}&per_page=24&page=1&format=json&nojsoncallback=1&extras=url_o`;
         this.url = `https://api.unsplash.com/search/photos?page=1&query=${this.searchStr}&per_page=20&client_id=${config.UNSPLASH_KEY}`
         break;
 
       case 'video':
-        // YOUTUBE API URL GOES HERE
         this.url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.searchStr}&key=${config.YOUTUBE_KEY}`;
         break;
     }
@@ -54,6 +51,8 @@ class Search {
 }
 
 class Page extends Search{
+  static soundURL;
+
   constructor(results,dictionaryURL,searchStr){
     super();
     this.results       = results;
@@ -63,14 +62,18 @@ class Page extends Search{
 
   getDictionaryResults() {
     fetch(this.dictionaryURL)
-      .then(response => response.json())
-      .then(data => {
-        this.showResults(data.results);
-      });
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        return false;
+      })
+      .then( data => this.showResults(data) );
   }
 
   showResults(dictionaryResults){
     let searchHTML = '';
+    document.getElementById('dictionary-result').classList.remove('show');
     const dictionary = document.getElementById('dictionary-result');
     const search     = document.getElementById('search-results');
     const numResults = document.getElementById('num-results');
@@ -80,13 +83,49 @@ class Page extends Search{
     search.innerHTML     = "";
     numResults.innerHTML = "";
 
-    // console.log(dictionaryResults)
     if (dictionaryResults.length > 0) {
+      document.getElementById('dictionary-result').classList.toggle('show');
+      let allMeanings = '';
+      let soundImage  = '';
+      let phonetic    = ''
+      let meanings    = dictionaryResults[0].meaning;
+
+      if (dictionaryResults[0].pronunciation){
+        Page.soundURL = dictionaryResults[0].pronunciation;
+        soundImage = '<a href=""><img class="play-sound" src="images/sound-button.png" alt="Play Sound"></a>';
+      }
+      
+      if (dictionaryResults[0].phonetic){
+        phonetic = `<p class="phonetic"><small>${dictionaryResults[0].phonetic}</small></p>`;
+      }
+
+      // Get all meanings of word and store in allMeanings
+      Object.keys(meanings).forEach( ele => {
+        let meaning = '';
+        
+        meanings[ele].forEach( result => {
+          meaning += `<li>${result.definition}</li>`;
+        });
+
+        allMeanings += `
+        <div class="meaning">
+          <p><strong>${ele}</strong></p>
+          <ol>
+            ${meaning}
+          </ol>
+        </div>
+        `
+
+      });
+
       dictionary.insertAdjacentHTML('beforeend',
         `
-      <h4>${this.searchStr}</h4>
-      <p><strong>Part of Speech: </strong>${dictionaryResults[0].part_of_speech}</p>
-      <p><strong>Definition: </strong>${dictionaryResults[0].senses[0].definition}</p>
+      <div class="dict-flex">
+        ${soundImage}
+        <h2>${this.searchStr}</h2>
+      </div>
+      ${phonetic}
+      <div class="meanings">${allMeanings}</div>
       <p></p>
       `
       )
@@ -107,6 +146,11 @@ class Page extends Search{
     search.insertAdjacentHTML('beforeend',searchHTML)
 
     document.getElementById('results').classList.add('show');
+  }
+
+  static playSound() {
+    var audio = new Audio(this.soundURL);
+    audio.play();
   }
   
 }
@@ -164,7 +208,7 @@ class Video extends Search {
       videosHTML += `
         <figure class="image-block video-block">
           <div class="image-item video-item" data-modal="video-modal" data-embed="https://www.youtube.com/embed/${element.id.videoId}" data-title="${element.snippet.title}" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url(${element.snippet.thumbnails.high.url});">
-            <svg class="video-overlay-play-button" viewBox="0 0 200 200" alt="Play video" id="play-video">
+            <svg data-modal="video-modal" data-embed="https://www.youtube.com/embed/${element.id.videoId}" data-title="${element.snippet.title}" class="video-overlay-play-button" viewBox="0 0 200 200" alt="Play video" id="play-video">
               <circle cx="100" cy="100" r="90" fill="none" stroke-width="15" stroke="#FFF"/>
               <polygon points="70, 55 70, 145 145, 100" fill="#FFF"/>
             </svg>
@@ -194,7 +238,6 @@ const searchHandler = () => {
 }
 
 const openModal = (title,embedURL) => {
-  console.log('open modal')
   document.querySelector('body').classList.add('modal-open');
   document.getElementById('modal-title').innerText = title;
   document.getElementById('video-iframe').src = embedURL;
@@ -202,7 +245,6 @@ const openModal = (title,embedURL) => {
 }
 
 const closeModal = () => {
-  console.log('closing')
   document.querySelector('body').classList.remove('modal-open');
   document.getElementById('video-iframe').src = "";
   document.getElementById('video-modal').style.height = 0;
@@ -214,7 +256,7 @@ const navHandler = (type) => {
   search.decideType();
 }
 
-const eventListener = () => {
+const eventListeners = () => {
   document.addEventListener('click', function (event) {
     event.preventDefault();
 
@@ -226,11 +268,10 @@ const eventListener = () => {
       event.target.parentElement.classList.add('active');
       navHandler(event.target.dataset.type);
     // Open video modal
-    } else if (event.target.matches('.video-item')){
+    } else if (event.target.matches('.video-item') || event.target.matches('.video-overlay-play-button')){
       openModal(event.target.dataset.title, event.target.dataset.embed);
-    // Closes video modal
-    } else if (event.target.matches('#modal-close')){
-      closeModal();
+    } else if(event.target.matches('.play-sound')){
+      Page.playSound();
     }
 
   }, false);
@@ -238,7 +279,7 @@ const eventListener = () => {
 
 const init = () => {
   searchHandler();
-  eventListener();
+  eventListeners();
 }
 
 init();

@@ -1,5 +1,6 @@
 body{
   height: 100%;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .modal-open{
@@ -64,14 +65,32 @@ nav li.active a{
 }
 
 #dictionary-result{
+  display: none;
   border: 2px solid #CCC;
   padding: 20px;
+}
+
+#dictionary-result.show{
+  display: block;
+}
+
+.dict-flex{
+  display: flex;
+}
+
+.dict-flex h2{
+  margin: 0 10px;
+}
+
+.phonetic{
+  margin-top: 0;
 }
 
 .search-item{
   border: 1px solid blue;
   padding: 20px;
 }
+
 .image-block{
   flex-basis: calc(25% - 30px);
   margin: 15px;
@@ -100,6 +119,7 @@ nav li.active a{
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
+  background: transparent;
 }
 
 #video-iframe{
@@ -154,3 +174,30 @@ nav li.active a{
 .modal-open #video-iframe{
   height: 315px;
 }
+
+@media(max-width: 1024px){
+  .image-block{
+    flex-basis: calc(33.33333% - 30px)
+  }
+}
+
+@media(max-width: 767px){
+  
+  .container{
+    max-width: 100%;
+  }
+
+  .image-block{
+    flex-basis: calc(50% - 30px)
+  }
+}
+
+
+@media(max-width: 480px){
+  .image-block{
+    flex-basis: 100%;
+    margin: 15px 0;
+  }
+}
+
+
