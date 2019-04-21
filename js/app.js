@@ -48,6 +48,10 @@ class Search {
         }
       });
   }
+
+  hideDictionary(){
+    document.getElementById('dictionary-result').classList.remove('show');
+  }
 }
 
 class Page extends Search{
@@ -84,7 +88,7 @@ class Page extends Search{
     numResults.innerHTML = "";
 
     if (dictionaryResults.length > 0) {
-      document.getElementById('dictionary-result').classList.toggle('show');
+      document.getElementById('dictionary-result').classList.add('show');
       let allMeanings = '';
       let soundImage  = '';
       let phonetic    = ''
@@ -162,6 +166,7 @@ class Image extends Search {
   }
 
   showResults(){
+    this.hideDictionary();
     let imagesHTML   = '';
     const search     = document.getElementById('search-results');
     const numResults = document.getElementById('num-results');
@@ -193,6 +198,7 @@ class Video extends Search {
   }
 
   showResults(){
+    this.hideDictionary();
     let videosHTML   = '';
     const search     = document.getElementById('search-results');
     const numResults = document.getElementById('num-results');
