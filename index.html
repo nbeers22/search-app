@@ -11,29 +11,29 @@
 </head>
 <body>
   <div class="modal-overlay" onclick="closeModal()"></div>
-  <header>
+  <header class="banner" role="banner">
     <div class="container">
-      <h1>Web Finder</h1>
-      <p>Finally, a search engine that will never track you!</p>
-      <p>Search for web pages, images, videos and more!</p>
+      <img src="images/webfinder-logo.jpg" alt="WebFinder">
+      <p class="tagline">Finally, a search engine that will never track you!</p>
+      <p class="command">Search for: <br><span id="typed"></span></p>
+      <!-- Search form -->
+      <form id="searchform">
+        <label for="search">Enter a keyword or phrase to search</label>
+        <!-- <label for="type">Type</label>
+          <select name="type" id="type">
+            <option value="page" selected>Web Pages</option>
+            <option value="image">Images</option>
+            <option value="video">Videos</option>
+          </select> -->
+        <div class="form-group">
+          <input type="text" id="search" title="search" aria-label="search" required>
+          <button id="submit" type="submit"><img src="images/search-icon.png" title="Submit search" alt="Submit search"></button>
+        </div>
+        <img class="hide loading" src="images/loading.gif" alt="Loading Results">
+      </form>
     </div>
   </header>
   <main>
-
-    <!-- Search form -->
-    <div class="container">
-      <form id="searchform">
-        <label for="search">Enter a keyword or phrase to search for</label>
-        <input type="text" id="search" required>
-        <!-- <label for="type">Type</label>
-        <select name="type" id="type">
-          <option value="page" selected>Web Pages</option>
-          <option value="image">Images</option>
-          <option value="video">Videos</option>
-        </select> -->
-        <button id="submit" type="submit">Search</button>
-      </form>
-    </div>
 
     <!-- Search results container -->
     <section id="results" class="container">
@@ -57,6 +57,9 @@
         <button id="modal-close" onclick="closeModal()">&times;</button>
     </aside>
   </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
   <script src='js/config.js'></script>
   <script src='js/app.js'></script>
 </body>

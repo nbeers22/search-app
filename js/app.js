@@ -1,3 +1,12 @@
+class Utility {
+
+  static scrollToResults() {
+    const header = document.getElementsByClassName('banner')[0];
+    const height = header.offsetHeight;
+    window.scrollTo({ top: height, left: 0, behavior: "smooth" });
+  }
+}
+
 class Search {
   constructor(searchStr,type = '',url = ''){
     this.searchStr     = searchStr;
@@ -135,14 +144,28 @@ class Page extends Search{
       )
     }
 
-    numResults.innerHTML = `Total results: ${this.results.searchInformation.formattedTotalResults}`;
+    // Hide loading gif right before results are populated
+    document.getElementsByClassName('loading')[0].classList.toggle('hide');
 
+    // Show total results returned
+    numResults.innerHTML = `Total results: ${this.results.searchInformation.formattedTotalResults}`;
+    console.log(this.results.items)
+    // Display each search result
     this.results.items.forEach( (element,i) => {
+      let img = '';
+      if(element.pagemap.cse_thumbnail){
+        img = `<div class="img-result" style="background-image: url(${element.pagemap.cse_thumbnail[0].src})"></div>`;
+      }
       searchHTML += `
         <div class="search-item">
           <a href="${element.link}"><h3 class="search-title">${element.htmlTitle}</h3></a>
-          <p class="search-snippet">${element.snippet}</p>
-          <p class="search-url">${element.displayLink}</p>
+          <article class="search-meta">
+            ${img}
+            <div class="text-result">
+              <p class="search-snippet">${element.snippet}</p>
+              <p class="search-url">${element.displayLink}</p>
+            </div>
+          </div>
         </div>
       `
     });
@@ -150,6 +173,7 @@ class Page extends Search{
     search.insertAdjacentHTML('beforeend',searchHTML)
 
     document.getElementById('results').classList.add('show');
+    Utility.scrollToResults();
   }
 
   static playSound() {
@@ -234,6 +258,7 @@ const searchHandler = () => {
   btn.addEventListener('click', event => {
     let searchStr = document.getElementById('search').value;
     // let type      = document.getElementById('type').value;
+    document.getElementsByClassName('loading')[0].classList.toggle('hide');
     event.preventDefault();
     
     if(!searchStr) return false;
@@ -286,6 +311,14 @@ const eventListeners = () => {
 const init = () => {
   searchHandler();
   eventListeners();
+ 
+  var options = {
+    strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "Recipes", "Jobs", "And More!"],
+    typeSpeed: 40,
+    loop: true
+  }
+
+  var typed = new Typed("#typed", options);
 }
 
 init();

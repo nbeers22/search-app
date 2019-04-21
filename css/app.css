@@ -1,6 +1,14 @@
+*{
+  box-sizing: border-box;
+}
+
 body{
   height: 100%;
   font-family: 'Montserrat', sans-serif;
+}
+
+.hide{
+  display: none;
 }
 
 .modal-open{
@@ -19,6 +27,66 @@ body{
   max-width: 1200px;
   margin: auto;
   padding: 0 20px;
+}
+
+.banner{
+  height: 100vh;
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.tagline{
+  font-size: 14px;
+  margin-top: 0;
+}
+
+.command{
+  font-size: 2.375rem;
+  margin: 20px 0;
+}
+
+form label{
+  margin-bottom: 10px;
+  display: block;
+}
+
+.form-group{
+  position: relative;
+}
+
+.form-group input[type=text]{
+  height: 45px;
+  padding: 5px 15px;
+  border-radius: 25px;
+  box-shadow: none;
+  width: 100%;
+  outline: none;
+  border: 2px solid #333;
+}
+
+.form-group button{
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.loading{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#submit{
+  padding: 0;
+  border: 0;
+}
+
+#submit img{
+  width: 25px;
 }
 
 #results{
@@ -64,8 +132,39 @@ nav li.active a{
   flex-wrap: wrap;
 }
 
+.search-meta{
+  display: flex;
+}
+
+.img-result{
+  height: 80px;
+  min-width: 80px;
+  max-width: 80px;
+  margin: 0 20px 0 0;
+  border-radius: 3px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.text-result{
+  flex: auto;
+}
+
+.search-snippet{
+  margin: 0 0 5px;
+}
+
+.search-url{
+  font-size: 0.875rem;
+  color: #006621;
+  margin: 0;
+}
+
 #dictionary-result{
   display: none;
+  max-width: 450px;
+  margin-bottom: 30px;
   border: 2px solid #CCC;
   padding: 20px;
 }
@@ -87,7 +186,7 @@ nav li.active a{
 }
 
 .search-item{
-  border: 1px solid blue;
+  flex-basis: 100%;
   padding: 20px;
 }
 
