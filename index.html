@@ -17,7 +17,7 @@
       <p class="tagline">Finally, a search engine that will never track you!</p>
       <p class="command">Search for: <br><span id="typed"></span></p>
       <!-- Search form -->
-      <form id="searchform">
+      <form class="searchform">
         <label for="search">Enter a keyword or phrase to search</label>
         <!-- <label for="type">Type</label>
           <select name="type" id="type">
@@ -33,6 +33,28 @@
       </form>
     </div>
   </header>
+  <aside id="top-nav" class="search-nav">
+    <div class="container">
+      <div class="logo">
+        <img src="images/webfinder-word.png" alt="WebFinder">
+      </div>
+      <div class="nav-search">
+        <form class="searchform">
+          <!-- <label for="type">Type</label>
+                          <select name="type" id="type">
+                            <option value="page" selected>Web Pages</option>
+                            <option value="image">Images</option>
+                            <option value="video">Videos</option>
+                          </select> -->
+          <div class="form-group">
+            <input type="text" id="search" title="search" aria-label="search" required>
+            <button id="submit" type="submit"><img src="images/search-icon.png" title="Submit search"
+                alt="Submit search"></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </aside>
   <main>
 
     <!-- Search results container -->

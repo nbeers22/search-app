@@ -306,6 +306,16 @@ const eventListeners = () => {
     }
 
   }, false);
+
+  window.addEventListener('scroll', () => {
+    let topNav = document.getElementById('top-nav');
+
+    if (window.pageYOffset > 650) {
+      topNav.classList.add('open');
+    }else{
+      topNav.classList.remove('open');
+    }
+  });
 }
 
 const init = () => {
