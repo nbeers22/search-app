@@ -296,13 +296,6 @@ class Weather extends Search{
     let currentWeatherURL = `https://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
     let fiveDayURL = `https://api.openweathermap.org/data/2.5/forecast/daily?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&cnt=5&appid=${config.WEATHER_KEY}`;
 
-    // fetch(url)
-    // .then( response => response.json() )
-    // .then( responseJSON => {
-    //   console.log(responseJSON);
-    //   Weather.showResults(responseJSON)
-    // });
-
     Promise.all([
       fetch(currentWeatherURL).then(response => response.json()),
       fetch(fiveDayURL).then(response => response.json())

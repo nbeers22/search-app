@@ -327,6 +327,7 @@ nav li.active a{
 @media(max-width: 1024px){
   .image-block{
     flex-basis: calc(33.33333% - 30px)
+    max-width: calc(33.33333% - 30px)
   }
 }
 
@@ -338,6 +339,7 @@ nav li.active a{
 
   .image-block{
     flex-basis: calc(50% - 30px)
+    max-width: calc(50% - 30px)
   }
 }
 
