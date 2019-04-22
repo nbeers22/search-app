@@ -259,22 +259,28 @@ class Video extends Search {
 
 class Weather extends Search{
 
-  html = '';
-
   constructor(){
     super();
     this.displayMessage();
   }
 
   displayMessage(){
-    let searchResults = document.getElementById('search-results');
-    this.html = `
+    let html = '';
+    const search     = document.getElementById('search-results');
+    const numResults = document.getElementById('num-results');
+    const dictionary = document.getElementById('dictionary-result');
+
+    search.innerHTML = '';
+    numResults.innerHTML = '';
+    dictionary.innerHTML = '';
+
+    html = `
       <h3>Retrieving your current location</h3>
       <h5>Please allow location services on your browser</h5>
       <div id="location"></div>
     `
 
-    searchResults.insertAdjacentHTML('beforeend', this.html);
+    search.insertAdjacentHTML('beforeend', html);
     this.getLocation();
   }
 
@@ -282,7 +288,7 @@ class Weather extends Search{
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.showPosition,this.showError);
     } else {
-      document.getElementById('location').innerHTML = "Geolocation is not supported by this browser.";
+      this.showError("Geolocation is not supported by this browser");
     }
   }
 
@@ -291,31 +297,56 @@ class Weather extends Search{
       "<br>Longitude: " + position.coords.longitude;
   }
 
+  getWeatherWithLatLong(position){
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
+
+    fetch(url)
+    .then( response => response.json())
+    .then( responseJSON => {
+      console.log(responseJSON);
+    });
+  }
+
   showError(error){
     let errorMsg = '';
+    let html     = ''
     switch (error.code) {
+
       case error.PERMISSION_DENIED:
         errorMsg = "<p>User denied the request for Geolocation.</p>"
         break;
+        
       case error.POSITION_UNAVAILABLE:
         errorMsg = "<p>Location information is unavailable.</p>"
         break;
+
       case error.TIMEOUT:
         errorMsg = "<p>The request to get user location timed out.</p>"
         break;
+
       case error.UNKNOWN_ERROR:
         errorMsg = "<p>An unknown error occurred.</p>"
         break;
+
+      default:
+        errorMsg = error || 'There was an error with the location service.';
+        break;
     }
 
-    this.html = `
+    const search = document.getElementById('search-results');
+
+    search.innerHTML = '';
+
+    html = `
       ${errorMsg}
       <form id="weather-form">
         <label for="weather-input">Enter your city or zip code</label>
         <input type="text" id="weather-input" required>
-        <input type="submit" value="Submit">
+        <input id="weather-submit" type="submit" value="Submit">
       </form>
-    `
+    `;
+
+    search.insertAdjacentHTML('beforeend', html);
   }
 }
 
@@ -383,14 +414,15 @@ class Utility {
 
       if (!searchStr) return false;
 
+      
+      const search = new Search(searchStr);
+      search.decideType();
+
       // switch active nav item
       document.querySelector('#module-nav').querySelectorAll('li').forEach( (element,i) => {
         element.classList.remove('active');
         if(i === 0) element.classList.add('active');
       });
-
-      const search = new Search(searchStr);
-      search.decideType();
     });
   }
 
