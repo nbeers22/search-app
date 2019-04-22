@@ -146,7 +146,6 @@ class Page extends Search{
 
     // Show total results returned
     numResults.innerHTML = `Total results: ${this.results.searchInformation.formattedTotalResults}`;
-    console.log(this.results.items)
     // Display each search result
     this.results.items.forEach( (element,i) => {
       let img = '';
