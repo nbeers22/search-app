@@ -299,11 +299,11 @@ class Weather extends Search{
     .then( response => response.json() )
     .then( responseJSON => {
       console.log(responseJSON);
-      this.showResults(responseJSON)
+      Weather.showResults(responseJSON)
     });
   }
 
-  showResults(data){
+  static showResults(data){
     let html = '';
     const search = document.getElementById('search-results');
 
