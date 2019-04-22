@@ -236,6 +236,7 @@ nav li.active a{
 
 .search-item{
   flex-basis: 100%;
+  max-width: 700px;
   padding: 20px;
 }
 
@@ -345,6 +346,14 @@ nav li.active a{
   .image-block{
     flex-basis: 100%;
     margin: 15px 0;
+  }
+
+  div.log{
+    display: none;
+  }
+
+  .nav-search{
+    margin-left: 30px;
   }
 }
 
