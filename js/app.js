@@ -271,12 +271,12 @@ class Weather extends Search{
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.showPosition);
     } else {
-      this.location.innerHTML = "Geolocation is not supported by this browser.";
+      document.getElementById('location').innerHTML = "Geolocation is not supported by this browser.";
     }
   }
 
   showPosition(position) {
-    this.location.innerHTML = "Latitude: " + position.coords.latitude +
+    document.getElementById('location').innerHTML = "Latitude: " + position.coords.latitude +
       "<br>Longitude: " + position.coords.longitude;
   }
 }
