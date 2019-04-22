@@ -269,6 +269,7 @@ class Weather extends Search{
     const search     = document.getElementById('search-results');
     const numResults = document.getElementById('num-results');
     const dictionary = document.getElementById('dictionary-result');
+    this.hideDictionary();
 
     search.innerHTML = '';
     numResults.innerHTML = '';
