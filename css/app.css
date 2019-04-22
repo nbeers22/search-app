@@ -338,8 +338,8 @@ nav li.active a{
   }
 
   .image-block{
-    flex-basis: calc(50% - 30px)
-    max-width: calc(50% - 30px)
+    flex-basis: calc(50% - 30px);
+    max-width: calc(50% - 30px);
   }
 }
 
