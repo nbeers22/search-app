@@ -341,12 +341,17 @@ nav li.active a{
     flex-basis: calc(50% - 30px);
     max-width: calc(50% - 30px);
   }
+
+  .search-item{
+    padding: 10px 0;
+  }
 }
 
 
 @media(max-width: 480px){
   .image-block{
     flex-basis: 100%;
+    max-width: 100%;
     margin: 15px 0;
   }
 
