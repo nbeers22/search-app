@@ -33,6 +33,8 @@ class Search {
     fetch(url)
       .then( response => response.json() )
       .then( data => {
+        // Show nagivation right before results are shown
+        document.getElementById('module-nav').style.display = 'block';
         switch (this.type) {
           case 'page':
           case '':
@@ -148,8 +150,10 @@ class Page extends Search{
     // Display each search result
     this.results.items.forEach( (element,i) => {
       let img = '';
-      if(element.pagemap.cse_thumbnail){
-        img = `<div class="img-result" style="background-image: url(${element.pagemap.cse_thumbnail[0].src})"></div>`;
+      if(element.pagemap){
+        if (element.pagemap.cse_thumbnail){
+          img = `<div class="img-result" style="background-image: url(${element.pagemap.cse_thumbnail[0].src})"></div>`;
+        }
       }
       searchHTML += `
         <div class="search-item">
@@ -198,10 +202,16 @@ class Image extends Search {
     numResults.innerHTML = `Total results: ${this.results.total}`;
     
     this.results.results.forEach((element, i) => {
+      let description;
+      if(element.description){
+        description = element.description.substr(0,75);
+      }else{
+        description = "Untitled Image"
+      }
       imagesHTML += `
         <figure class="image-block">
           <div class="image-item" style="background-image: url(${element.urls.regular})"></div>
-          <p class="image-title">${element.description}</p>
+          <p class="image-title">${description}</p>
         </figure>
       `
     });
@@ -249,10 +259,11 @@ class Video extends Search {
 
 class Weather extends Search{
 
+  html = '';
+
   constructor(){
     super();
     this.displayMessage();
-    let this.html = '';
   }
 
   displayMessage(){
@@ -263,7 +274,7 @@ class Weather extends Search{
       <div id="location"></div>
     `
 
-    searchResults.insertAdjacentHTML('beforeend', html);
+    searchResults.insertAdjacentHTML('beforeend', this.html);
     this.getLocation();
   }
 
@@ -318,7 +329,7 @@ class Utility {
 
   typedText(){
     let options = {
-      strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "Recipes", "Jobs", "And More!"],
+      strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "And More!"],
       typeSpeed: 40,
       loop: true
     }
@@ -348,25 +359,16 @@ class Utility {
       }
 
     }, false);
-
-    // Show/hide top fixed nav
-    window.addEventListener('scroll', () => {
-      let topNav = document.getElementById('top-nav');
-
-      if (window.pageYOffset > 650) {
-        topNav.classList.add('open');
-      } else {
-        topNav.classList.remove('open');
-      }
-    });
   }
 
   searchHandler(){
     const btn = document.getElementById('submit');
+    const topnavBtn = document.getElementById('topnav-submit');
 
     btn.addEventListener('click', event => {
       let searchStr = document.getElementById('search').value;
       document.getElementsByClassName('loading')[0].classList.toggle('hide');
+      document.getElementById('topnav-search').value = searchStr;
       event.preventDefault();
 
       if (!searchStr) return false;
@@ -374,6 +376,32 @@ class Utility {
       const search = new Search(searchStr);
       search.decideType();
     });
+    
+    topnavBtn.addEventListener('click', event => {
+      let searchStr = document.getElementById('topnav-search').value;
+      event.preventDefault();
+
+      if (!searchStr) return false;
+
+      // switch active nav item
+      document.querySelector('#module-nav').querySelectorAll('li').forEach( (element,i) => {
+        element.classList.remove('active');
+        if(i === 0) element.classList.add('active');
+      });
+
+      const search = new Search(searchStr);
+      search.decideType();
+    });
+  }
+
+  static showFixedNav(){
+    let topNav = document.getElementById('top-nav');
+    topNav.classList.add('open');
+  }
+
+  static hideHeader(){
+    let header = document.getElementsByClassName('banner')[0];
+    header.style.display = 'none';
   }
 
   openModal(title, embedURL){
@@ -384,7 +412,7 @@ class Utility {
   }
   
   navHandler(type){
-    let searchStr = document.getElementById('search').value;
+    let searchStr = document.getElementById('topnav-search').value;
     const search = new Search(searchStr, type);
     search.decideType();
   }
@@ -396,9 +424,8 @@ class Utility {
   }
 
   static scrollToResults(){
-    const header = document.getElementsByClassName('banner')[0];
-    const height = header.offsetHeight;
-    window.scrollTo({ top: height, left: 0, behavior: "smooth" });
+    Utility.hideHeader();
+    Utility.showFixedNav();
   }
 }
 

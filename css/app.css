@@ -80,13 +80,17 @@ form label{
   transform: translateX(-50%);
 }
 
-#submit{
+#submit,#topnav-submit{
   padding: 0;
   border: 0;
 }
 
-#submit img{
+#submit img,#topnav-submit img{
   width: 25px;
+}
+
+#module-nav{
+  display: none;
 }
 
 .search-nav{
@@ -131,6 +135,12 @@ form label{
   transition: all 0.3s ease-in-out;
 }
 
+#results.show{
+  margin-top: 100px;
+  height: auto;
+  opacity: 1;
+}
+
 nav ul{
   list-style-type: none;
   display: flex;
@@ -156,11 +166,6 @@ nav li.active{
 nav li.active a{
   color: blue;
   font-weight: 600;
-}
-
-#results.show{
-  height: auto;
-  opacity: 1;
 }
 
 #search-results{
@@ -189,6 +194,7 @@ nav li.active a{
 
 .search-snippet{
   margin: 0 0 5px;
+  max-width: 550px;
 }
 
 .search-url{
@@ -199,10 +205,12 @@ nav li.active a{
 
 #dictionary-result{
   display: none;
-  max-width: 450px;
+  max-width: 550px;
   margin-bottom: 30px;
-  border: 2px solid #CCC;
+  border: 1px solid #CCC;
   padding: 20px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 4px 0px #CCC;
 }
 
 #dictionary-result.show{
@@ -219,6 +227,10 @@ nav li.active a{
 
 .phonetic{
   margin-top: 0;
+}
+
+.meaning li{
+  margin: 10px 0;
 }
 
 .search-item{

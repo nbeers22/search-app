@@ -13,22 +13,18 @@
   <div class="modal-overlay" onclick="Utility.closeModal()"></div>
   <header class="banner" role="banner">
     <div class="container">
-      <img src="images/webfinder-logo.jpg" alt="WebFinder">
-      <p class="tagline">Finally, a search engine that will never track you!</p>
+      <img src="images/wf-circle-logo-no-letters.png" alt="WebFinder">
+      <p class="tagline">A search engine that will never track you!</p>
       <p class="command">Search for: <br><span id="typed"></span></p>
-      <!-- Search form -->
+
+      <!-- Primary Search form -->
       <form class="searchform">
         <label for="search">Enter a keyword or phrase to search</label>
-        <!-- <label for="type">Type</label>
-          <select name="type" id="type">
-            <option value="page" selected>Web Pages</option>
-            <option value="image">Images</option>
-            <option value="video">Videos</option>
-          </select> -->
         <div class="form-group">
           <input type="text" id="search" title="search" aria-label="search" required>
           <button id="submit" type="submit"><img src="images/search-icon.png" title="Submit search" alt="Submit search"></button>
         </div>
+
         <img class="hide loading" src="images/loading.gif" alt="Loading Results">
       </form>
     </div>
@@ -47,8 +43,8 @@
                             <option value="video">Videos</option>
                           </select> -->
           <div class="form-group">
-            <input type="text" id="search" title="search" aria-label="search" required>
-            <button id="submit" type="submit"><img src="images/search-icon.png" title="Submit search"
+            <input type="text" id="topnav-search" title="search" aria-label="search" required>
+            <button id="topnav-submit" type="submit"><img src="images/search-icon.png" title="Submit search"
                 alt="Submit search"></button>
           </div>
         </form>
@@ -59,7 +55,7 @@
 
     <!-- Search results container -->
     <section id="results" class="container">
-      <nav>
+      <nav id="module-nav">
         <ul>
           <li class="active"><a class="menu-item" data-type="page" href="">Pages</a></li>
           <li><a class="menu-item" data-type="image" href="">Images</a></li>
