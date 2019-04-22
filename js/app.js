@@ -310,10 +310,11 @@ class Weather extends Search{
     search.innerHTML = '';
 
     html = `
-      <h3>${data.name}, ${data.sys.country}</h3>
-      <p><strong>Current Temperature:</strong> ${data.main.temp}&deg;<br>${data.weather[0].description}</p>
-      <p><strong>H</strong> ${data.main.temp_max}&deg; / <strong>L</strong> ${data.main.temp_min}&deg;</p>
-
+      <div class="weather-meta">
+        <h3>${data.name}, ${data.sys.country}</h3>
+        <p><strong>Current Temperature:</strong> ${Math.floor(data.main.temp)}&deg;<br>${data.weather[0].description}</p>
+        <p><strong>H</strong> ${Math.floor(data.main.temp_max)}&deg; / <strong>L</strong> ${Math.floor(data.main.temp_min)}&deg;</p>
+      </div>
     `;
 
     search.insertAdjacentHTML('beforeend', html);
