@@ -252,12 +252,12 @@ class Weather extends Search{
   constructor(){
     super();
     this.displayMessage();
-    this.location = document.getElementById('location');
+    let this.html = '';
   }
 
   displayMessage(){
     let searchResults = document.getElementById('search-results');
-    let html = `
+    this.html = `
       <h3>Retrieving your current location</h3>
       <h5>Please allow location services on your browser</h5>
       <div id="location"></div>
@@ -269,7 +269,7 @@ class Weather extends Search{
 
   getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showPosition);
+      navigator.geolocation.getCurrentPosition(this.showPosition,this.showError);
     } else {
       document.getElementById('location').innerHTML = "Geolocation is not supported by this browser.";
     }
@@ -278,6 +278,32 @@ class Weather extends Search{
   showPosition(position) {
     document.getElementById('location').innerHTML = "Latitude: " + position.coords.latitude +
       "<br>Longitude: " + position.coords.longitude;
+  }
+
+  showError(error){
+    let errorMsg = '';
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        errorMsg = "<p>User denied the request for Geolocation.</p>"
+        break;
+      case error.POSITION_UNAVAILABLE:
+        errorMsg = "<p>Location information is unavailable.</p>"
+        break;
+      case error.TIMEOUT:
+        errorMsg = "<p>The request to get user location timed out.</p>"
+        break;
+      case error.UNKNOWN_ERROR:
+        errorMsg = "<p>An unknown error occurred.</p>"
+        break;
+    }
+    this.html = `
+      ${errorMsg}
+      <form id="weather-form">
+        <label for="weather-input">Enter your city or zip code</label>
+        <input type="text" id="weather-input" required>
+        <input type="submit" value="Submit">
+      </form>
+    `
   }
 }
 
@@ -355,6 +381,12 @@ class Utility {
     document.getElementById('video-iframe').src = embedURL;
     document.getElementById('video-modal').style.height = "auto";
   }
+  
+  navHandler(type){
+    let searchStr = document.getElementById('search').value;
+    const search = new Search(searchStr, type);
+    search.decideType();
+  }
 
   static closeModal(){
     document.querySelector('body').classList.remove('modal-open');
@@ -362,13 +394,7 @@ class Utility {
     document.getElementById('video-modal').style.height = 0;
   }
 
-  navHandler(type){
-    let searchStr = document.getElementById('search').value;
-    const search = new Search(searchStr, type);
-    search.decideType();
-  }
-
-  static scrollToResults() {
+  static scrollToResults(){
     const header = document.getElementsByClassName('banner')[0];
     const height = header.offsetHeight;
     window.scrollTo({ top: height, left: 0, behavior: "smooth" });
