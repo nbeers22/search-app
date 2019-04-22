@@ -310,7 +310,7 @@ class Weather extends Search{
         console.log(response[0])
         console.log(response[1])
         Weather.showResults(response[0],response[1]);
-      )};
+      });
   }
 
   static showResults(current,fiveDay){
