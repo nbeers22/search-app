@@ -308,7 +308,7 @@ class Weather extends Search{
       fetch(fiveDayURL).then(response => response.json())
       ])
       .then(responseJSON => {
-        console.log(responseJSON)
+        // console.log(responseJSON)
         console.log(responseJSON[0])
         console.log(responseJSON[1])
         Weather.showResults(responseJSON[0], responseJSON[1]);
