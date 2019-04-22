@@ -242,6 +242,7 @@ nav li.active a{
 
 .image-block{
   flex-basis: calc(25% - 30px);
+  max-width: calc(25% - 30px);
   margin: 15px;
 }
 
