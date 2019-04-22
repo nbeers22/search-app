@@ -304,13 +304,14 @@ class Weather extends Search{
     // });
 
     Promise.all([
-      fetch(currentWeatherURL),
-      fetch(fiveDayURL)
-      ]).then(response => response.json() )
+      fetch(currentWeatherURL).then(response => response.json()),
+      fetch(fiveDayURL).then(response => response.json())
+      ])
       .then(responseJSON => {
-        console.log(response[0])
-        console.log(response[1])
-        Weather.showResults(response[0], response[1]);
+        console.log(responseJSON)
+        console.log(responseJSON[0])
+        console.log(responseJSON[1])
+        Weather.showResults(responseJSON[0], responseJSON[1]);
       });
 
   }
