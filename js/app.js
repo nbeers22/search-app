@@ -294,11 +294,12 @@ class Weather extends Search{
 
   getWeatherWithLatLong(position){
     let url = `https://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
+    let $this = this;
 
     fetch(url)
     .then( response => response.json() )
     .then( responseJSON => {
-      this.showResults(responseJSON)
+      $this.showResults(responseJSON)
     });
   }
 
