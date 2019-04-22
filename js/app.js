@@ -303,9 +303,14 @@ class Weather extends Search{
     //   Weather.showResults(responseJSON)
     // });
 
+    let headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+
     Promise.all([
-      fetch(currentWeatherURL).then(response => response.json()),
-      fetch(fiveDayURL).then(response => response.json())
+      fetch(currentWeatherURL,headers).then(response => response.json()),
+      fetch(fiveDayURL,headers).then(response => response.json())
       ])
       .then(responseJSON => {
         // console.log(responseJSON)
