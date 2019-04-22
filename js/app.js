@@ -297,7 +297,9 @@ class Weather extends Search{
 
     fetch(url)
     .then( response => response.json() )
-    .then( responseJSON => this.showResults(responseJSON) );
+    .then( responseJSON => {
+      this.showResults(responseJSON)
+    });
   }
 
   showResults(data){
