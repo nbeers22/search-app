@@ -293,13 +293,27 @@ class Weather extends Search{
   }
 
   getWeatherWithLatLong(position){
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
 
     fetch(url)
-    .then( response => response.json())
-    .then( responseJSON => {
-      console.log(responseJSON);
-    });
+    .then( response => response.json() )
+    .then( responseJSON => this.showResults(responseJSON) );
+  }
+
+  showResults(data){
+    let html = '';
+    const search = document.getElementById('search-results');
+
+    search.innerHTML = '';
+
+    html = `
+      <h3>${data.name}, ${data.sys.country}</h3>
+      <p><strong>Current Temperature:</strong> ${data.main.temp}&deg;<br>${data.weather[0].description}</p>
+      <p><strong>H</strong> ${data.main.temp_max}&deg; / <strong>L</strong> ${data.main.temp_min}&deg;</p>
+
+    `;
+
+    search.insertAdjacentHTML('beforeend', html);
   }
 
   showError(error){
