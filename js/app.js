@@ -303,21 +303,16 @@ class Weather extends Search{
     //   Weather.showResults(responseJSON)
     // });
 
-    let headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    }
-
     Promise.all([
-      fetch(currentWeatherURL,headers).then(response => response.json()),
-      fetch(fiveDayURL,headers).then(response => response.json())
+      fetch(currentWeatherURL).then(response => console.log(response)),
+      fetch(fiveDayURL).then(response => console.log(response))
       ])
-      .then(responseJSON => {
-        // console.log(responseJSON)
-        console.log(responseJSON[0])
-        console.log(responseJSON[1])
-        Weather.showResults(responseJSON[0], responseJSON[1]);
-      });
+      // .then(responseJSON => {
+      //   // console.log(responseJSON)
+      //   console.log(responseJSON[0])
+      //   console.log(responseJSON[1])
+      //   Weather.showResults(responseJSON[0], responseJSON[1]);
+      // });
 
   }
 
