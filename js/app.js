@@ -1,12 +1,3 @@
-class Utility {
-
-  static scrollToResults() {
-    const header = document.getElementsByClassName('banner')[0];
-    const height = header.offsetHeight;
-    window.scrollTo({ top: height, left: 0, behavior: "smooth" });
-  }
-}
-
 class Search {
   constructor(searchStr,type = '',url = ''){
     this.searchStr     = searchStr;
@@ -30,8 +21,12 @@ class Search {
       case 'video':
         this.url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.searchStr}&key=${config.YOUTUBE_KEY}`;
         break;
+      
+      case 'weather':
+        let weather = new Weather;
+        break;
     }
-    this.getResults(this.url);
+    if(this.url) this.getResults(this.url);
   }
 
   getResults(url) {
@@ -252,83 +247,132 @@ class Video extends Search {
   }
 }
 
-const searchHandler = () => {
-  const btn = document.getElementById('submit');
+class Weather extends Search{
 
-  btn.addEventListener('click', event => {
-    let searchStr = document.getElementById('search').value;
-    // let type      = document.getElementById('type').value;
-    document.getElementsByClassName('loading')[0].classList.toggle('hide');
-    event.preventDefault();
-    
-    if(!searchStr) return false;
-
-    const search = new Search(searchStr);
-    search.decideType();
-  });
-}
-
-const openModal = (title,embedURL) => {
-  document.querySelector('body').classList.add('modal-open');
-  document.getElementById('modal-title').innerText = title;
-  document.getElementById('video-iframe').src = embedURL;
-  document.getElementById('video-modal').style.height = "auto";
-}
-
-const closeModal = () => {
-  document.querySelector('body').classList.remove('modal-open');
-  document.getElementById('video-iframe').src = "";
-  document.getElementById('video-modal').style.height = 0;
-}
-
-const navHandler = (type) => {
-  let searchStr = document.getElementById('search').value;
-  const search = new Search(searchStr,type);
-  search.decideType();
-}
-
-const eventListeners = () => {
-  document.addEventListener('click', function (event) {
-    event.preventDefault();
-
-    // switch active nav item
-    if (event.target.matches('.menu-item')) {
-      document.querySelector('nav').querySelectorAll('li').forEach(element => {
-        element.classList.remove('active');
-      });
-      event.target.parentElement.classList.add('active');
-      navHandler(event.target.dataset.type);
-    // Open video modal
-    } else if (event.target.matches('.video-item') || event.target.matches('.video-overlay-play-button')){
-      openModal(event.target.dataset.title, event.target.dataset.embed);
-    } else if(event.target.matches('.play-sound')){
-      Page.playSound();
-    }
-
-  }, false);
-
-  window.addEventListener('scroll', () => {
-    let topNav = document.getElementById('top-nav');
-
-    if (window.pageYOffset > 650) {
-      topNav.classList.add('open');
-    }else{
-      topNav.classList.remove('open');
-    }
-  });
-}
-
-const init = () => {
-  searchHandler();
-  eventListeners();
- 
-  var options = {
-    strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "Recipes", "Jobs", "And More!"],
-    typeSpeed: 40,
-    loop: true
+  constructor(){
+    super();
+    this.displayMessage();
+    this.location = document.getElementById('location');
   }
 
-  var typed = new Typed("#typed", options);
+  displayMessage(){
+    let searchResults = document.getElementById('search-results');
+    let html = `
+      <h3>Retrieving your current location</h3>
+      <h5>Please allow location services on your browser</h5>
+      <div id="location"></div>
+    `
+
+    searchResults.insertAdjacentHTML('beforeend', html);
+    this.getLocation();
+  }
+
+  getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.showPosition);
+    } else {
+      this.location.innerHTML = "Geolocation is not supported by this browser.";
+    }
+  }
+
+  showPosition(position) {
+    this.location.innerHTML = "Latitude: " + position.coords.latitude +
+      "<br>Longitude: " + position.coords.longitude;
+  }
 }
 
-init();
+class Utility {
+  
+  constructor(){
+    this.searchHandler();
+    this.eventListeners();
+    this.typedText();
+  }
+
+  typedText(){
+    var options = {
+      strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "Recipes", "Jobs", "And More!"],
+      typeSpeed: 40,
+      loop: true
+    }
+
+    var typed = new Typed("#typed", options);
+  }
+
+  eventListeners(){
+    let $this = this;
+
+    document.addEventListener('click', function (event) {
+      event.preventDefault();
+
+      if (event.target.matches('.menu-item')) {
+        // switch active nav item
+        document.querySelector('nav').querySelectorAll('li').forEach(element => {
+          element.classList.remove('active');
+        });
+        event.target.parentElement.classList.add('active');
+        $this.navHandler(event.target.dataset.type);
+      } else if (event.target.matches('.video-item') || event.target.matches('.video-overlay-play-button')) {
+        // Open video modal
+        $this.openModal(event.target.dataset.title, event.target.dataset.embed);
+      } else if (event.target.matches('.play-sound')) {
+        // play word defintion sound
+        Page.playSound();
+      }
+
+    }, false);
+
+    // Show/hide top fixed nav
+    window.addEventListener('scroll', () => {
+      let topNav = document.getElementById('top-nav');
+
+      if (window.pageYOffset > 650) {
+        topNav.classList.add('open');
+      } else {
+        topNav.classList.remove('open');
+      }
+    });
+  }
+
+  searchHandler(){
+    const btn = document.getElementById('submit');
+
+    btn.addEventListener('click', event => {
+      let searchStr = document.getElementById('search').value;
+      document.getElementsByClassName('loading')[0].classList.toggle('hide');
+      event.preventDefault();
+
+      if (!searchStr) return false;
+
+      const search = new Search(searchStr);
+      search.decideType();
+    });
+  }
+
+  openModal(title, embedURL){
+    document.querySelector('body').classList.add('modal-open');
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('video-iframe').src = embedURL;
+    document.getElementById('video-modal').style.height = "auto";
+  }
+
+  static closeModal(){
+    document.querySelector('body').classList.remove('modal-open');
+    document.getElementById('video-iframe').src = "";
+    document.getElementById('video-modal').style.height = 0;
+  }
+
+  navHandler(type){
+    let searchStr = document.getElementById('search').value;
+    const search = new Search(searchStr, type);
+    search.decideType();
+  }
+
+  static scrollToResults() {
+    const header = document.getElementsByClassName('banner')[0];
+    const height = header.offsetHeight;
+    window.scrollTo({ top: height, left: 0, behavior: "smooth" });
+  }
+}
+
+const utility = new Utility;

@@ -10,7 +10,7 @@
   <link rel='stylesheet' type='text/css' media='screen' href='css/app.css'>
 </head>
 <body>
-  <div class="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal-overlay" onclick="Utility.closeModal()"></div>
   <header class="banner" role="banner">
     <div class="container">
       <img src="images/webfinder-logo.jpg" alt="WebFinder">
@@ -64,6 +64,7 @@
           <li class="active"><a class="menu-item" data-type="page" href="">Pages</a></li>
           <li><a class="menu-item" data-type="image" href="">Images</a></li>
           <li><a class="menu-item" data-type="video" href="">Videos</a></li>
+          <li><a class="menu-item" data-type="weather" href="">Weather</a></li>
         </ul>
       </nav>
       <aside id="dictionary-result"></aside>
@@ -76,7 +77,7 @@
       <h3 id="modal-title"></h3>
       <iframe id="video-iframe" src="" frameborder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <button id="modal-close" onclick="closeModal()">&times;</button>
+        <button id="modal-close" onclick="Utility.closeModal()">&times;</button>
     </aside>
   </main>
 
