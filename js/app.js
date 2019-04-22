@@ -97,7 +97,7 @@ class Page extends Search{
       document.getElementById('dictionary-result').classList.add('show');
       let allMeanings = '';
       let soundImage  = '';
-      let phonetic    = ''
+      let phonetic    = '';
       let meanings    = dictionaryResults[0].meaning;
 
       if (dictionaryResults[0].pronunciation){
@@ -294,12 +294,12 @@ class Weather extends Search{
 
   getWeatherWithLatLong(position){
     let url = `https://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
-    let $this = this;
 
     fetch(url)
     .then( response => response.json() )
     .then( responseJSON => {
-      $this.showResults(responseJSON)
+      console.log(responseJSON);
+      this.showResults(responseJSON)
     });
   }
 
