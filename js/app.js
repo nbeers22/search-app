@@ -287,15 +287,10 @@ class Weather extends Search{
 
   getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showPosition,this.showError);
+      navigator.geolocation.getCurrentPosition(this.getWeatherWithLatLong,this.showError);
     } else {
       this.showError("Geolocation is not supported by this browser");
     }
-  }
-
-  showPosition(position) {
-    document.getElementById('location').innerHTML = "Latitude: " + position.coords.latitude +
-      "<br>Longitude: " + position.coords.longitude;
   }
 
   getWeatherWithLatLong(position){
