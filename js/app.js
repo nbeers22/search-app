@@ -296,6 +296,7 @@ class Weather extends Search{
         errorMsg = "<p>An unknown error occurred.</p>"
         break;
     }
+
     this.html = `
       ${errorMsg}
       <form id="weather-form">
@@ -316,13 +317,13 @@ class Utility {
   }
 
   typedText(){
-    var options = {
+    let options = {
       strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "Recipes", "Jobs", "And More!"],
       typeSpeed: 40,
       loop: true
     }
 
-    var typed = new Typed("#typed", options);
+    let typed = new Typed("#typed", options);
   }
 
   eventListeners(){
