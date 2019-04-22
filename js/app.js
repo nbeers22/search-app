@@ -293,17 +293,27 @@ class Weather extends Search{
   }
 
   getWeatherWithLatLong(position){
-    let url = `https://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
+    let currentWeatherURL = `https://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
+    let fiveDayURL = `api.openweathermap.org/data/2.5/forecast/daily?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&cnt=5&appid=${config.WEATHER_KEY}`;
 
-    fetch(url)
-    .then( response => response.json() )
-    .then( responseJSON => {
-      console.log(responseJSON);
-      Weather.showResults(responseJSON)
-    });
+    // fetch(url)
+    // .then( response => response.json() )
+    // .then( responseJSON => {
+    //   console.log(responseJSON);
+    //   Weather.showResults(responseJSON)
+    // });
+
+    Promise.all([
+      fetch(currentWeatherURL),
+      fetch(fiveDayURL)
+      ]).then(response => {
+        console.log(response[0])
+        console.log(response[1])
+        Weather.showResults(response[0],response[1]);
+      )};
   }
 
-  static showResults(data){
+  static showResults(current,fiveDay){
     let html = '';
     const search = document.getElementById('search-results');
 
@@ -311,9 +321,9 @@ class Weather extends Search{
 
     html = `
       <div class="weather-meta">
-        <h3>${data.name}, ${data.sys.country}</h3>
-        <p><strong>Current Temperature:</strong> ${Math.floor(data.main.temp)}&deg;<br>${data.weather[0].description}</p>
-        <p><strong>H</strong> ${Math.floor(data.main.temp_max)}&deg; / <strong>L</strong> ${Math.floor(data.main.temp_min)}&deg;</p>
+        <h3>${current.name}, ${current.sys.country}</h3>
+        <p><strong>Current Temperature:</strong> ${Math.floor(current.main.temp)}&deg;<br>${current.weather[0].description}</p>
+        <p><strong>H</strong> ${Math.floor(current.main.temp_max)}&deg; / <strong>L</strong> ${Math.floor(current.main.temp_min)}&deg;</p>
       </div>
     `;
 
