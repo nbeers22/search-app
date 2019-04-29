@@ -314,6 +314,7 @@ nav li.active a{
 #modal-title{
   color: #FFF;
   max-width: 80%;
+  margin: 0;
 }
 
 .modal-open #video-modal{
@@ -323,6 +324,10 @@ nav li.active a{
 
 .modal-open #video-iframe{
   height: 315px;
+}
+
+.modal-open #modal-title{
+  margin: 20px 0;
 }
 
 @media(max-width: 1024px){
