@@ -61,13 +61,13 @@ class Search {
 }
 
 class Page extends Search{
-  static soundURL;
 
   constructor(results,dictionaryURL,searchStr){
     super();
     this.results       = results;
     this.dictionaryURL = dictionaryURL;
     this.searchStr     = searchStr;
+    this.soundURL      = '';
   }
 
   getDictionaryResults() {
@@ -101,8 +101,8 @@ class Page extends Search{
       let meanings    = dictionaryResults[0].meaning;
 
       if (dictionaryResults[0].pronunciation){
-        Page.soundURL = dictionaryResults[0].pronunciation;
-        soundImage = '<a href=""><img class="play-sound" src="images/sound-button.png" alt="Play Sound"></a>';
+        this.soundURL = dictionaryResults[0].pronunciation;
+        soundImage = `<a href=""><img class="play-sound" data-url="${this.soundURL}" src="images/sound-button.png" alt="Play Sound"></a>`;
       }
       
       if (dictionaryResults[0].phonetic){
@@ -171,11 +171,11 @@ class Page extends Search{
     search.insertAdjacentHTML('beforeend',searchHTML)
 
     document.getElementById('results').classList.add('show');
-    Utility.scrollToResults();
+    scrollToResults();
   }
 
-  static playSound() {
-    var audio = new Audio(this.soundURL);
+  static playSound(url) {
+    var audio = new Audio(url);
     audio.play();
   }
   
@@ -369,25 +369,17 @@ class Weather extends Search{
   }
 }
 
-class Utility {
-  
-  constructor(){
-    this.searchHandler();
-    this.eventListeners();
-    this.typedText();
+function typedText(){
+  let options = {
+    strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "And More!"],
+    typeSpeed: 40,
+    loop: true
   }
 
-  typedText(){
-    let options = {
-      strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "And More!"],
-      typeSpeed: 40,
-      loop: true
-    }
+  let typed = new Typed("#typed", options);
+}
 
-    let typed = new Typed("#typed", options);
-  }
-
-  eventListeners(){
+function eventListeners(){
     let $this = this;
 
     document.addEventListener('click', function (event) {
@@ -405,13 +397,14 @@ class Utility {
         $this.openModal(event.target.dataset.title, event.target.dataset.embed);
       } else if (event.target.matches('.play-sound')) {
         // play word defintion sound
-        Page.playSound();
+        let url = document.getElementsByClassName('play-sound')[0].dataset.url;
+        Page.playSound(url);
       }
 
     }, false);
   }
 
-  searchHandler(){
+function searchHandler(){
     const btn = document.getElementById('submit');
     const topnavBtn = document.getElementById('topnav-submit');
 
@@ -445,39 +438,42 @@ class Utility {
     });
   }
 
-  static showFixedNav(){
+function showFixedNav(){
     let topNav = document.getElementById('top-nav');
     topNav.classList.add('open');
   }
 
-  static hideHeader(){
+function hideHeader(){
     let header = document.getElementsByClassName('banner')[0];
     header.style.display = 'none';
   }
 
-  openModal(title, embedURL){
+function openModal(title, embedURL){
     document.querySelector('body').classList.add('modal-open');
     document.getElementById('modal-title').innerText = title;
     document.getElementById('video-iframe').src = embedURL;
     document.getElementById('video-modal').style.height = "auto";
   }
   
-  navHandler(type){
+function navHandler(type){
     let searchStr = document.getElementById('topnav-search').value;
     const search = new Search(searchStr, type);
     search.decideType();
   }
 
-  static closeModal(){
+function closeModal(){
     document.querySelector('body').classList.remove('modal-open');
     document.getElementById('video-iframe').src = "";
     document.getElementById('video-modal').style.height = 0;
   }
 
-  static scrollToResults(){
-    Utility.hideHeader();
-    Utility.showFixedNav();
+function scrollToResults(){
+    hideHeader();
+    showFixedNav();
   }
-}
 
-const utility = new Utility;
+(function init(){
+  searchHandler();
+  eventListeners();
+  typedText();
+})();
