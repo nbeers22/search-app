@@ -55,6 +55,12 @@ class Search {
       });
   }
 
+    hideLoadingImg(){
+    // Show loading icon inside search bar/Hide search icon
+    document.getElementById('search-icon').classList.remove('hide');
+    document.getElementById('loading-icon').classList.add('hide');
+  }
+
   hideDictionary(){
     document.getElementById('dictionary-result').classList.remove('show');
   }
@@ -156,7 +162,7 @@ class Page extends Search{
       }
       searchHTML += `
         <div class="search-item">
-          <a href="${element.link}"><h3 class="search-title">${element.htmlTitle}</h3></a>
+          <a href="${element.link}" target="_blank"><h3 class="search-title">${element.htmlTitle}</h3></a>
           <article class="search-meta">
             ${img}
             <div class="text-result">
@@ -171,6 +177,7 @@ class Page extends Search{
     search.insertAdjacentHTML('beforeend',searchHTML)
 
     document.getElementById('results').classList.add('show');
+    this.hideLoadingImg();
     scrollToResults();
   }
 
@@ -215,7 +222,8 @@ class Image extends Search {
       `
     });
 
-    search.insertAdjacentHTML('beforeend', imagesHTML)
+    this.hideLoadingImg();
+    search.insertAdjacentHTML('beforeend', imagesHTML);
   }
 }
 
@@ -252,7 +260,8 @@ class Video extends Search {
       `
     });
 
-    search.insertAdjacentHTML('beforeend', videosHTML)
+    this.hideLoadingImg();
+    search.insertAdjacentHTML('beforeend', videosHTML);
   }
 }
 
@@ -425,7 +434,12 @@ function searchHandler(){
 
       if (!searchStr) return false;
 
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Show loading icon inside search bar/Hide search icon
+      document.getElementById('search-icon').classList.add('hide');
+      document.getElementById('loading-icon').classList.remove('hide');
+
+      // Scroll to top of results before showing new results
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       
       const search = new Search(searchStr);
       search.decideType();
