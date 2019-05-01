@@ -12,11 +12,11 @@ body{
   display: none;
 }
 
-.modal-open{
+.video-modal-open,.image-modal-open{
   position: fixed;
 }
 
-.modal-open .modal-overlay{
+.video-modal-open .modal-overlay,.image-modal-open .modal-overlay{
   position: absolute;
   height: 100%;
   width: 100%;
@@ -259,6 +259,10 @@ nav li.active a{
   background-position: center center;
 }
 
+.image-result{
+  cursor: pointer;
+}
+
 .video-item{
   position: relative;
 }
@@ -277,7 +281,7 @@ nav li.active a{
   width: 100%;
 }
   
-#video-modal{
+#video-modal,#image-modal{
   position: absolute;
   top: 50%;
   left: 50%;
@@ -290,7 +294,7 @@ nav li.active a{
   z-index: 4;
 }
 
-#modal-close{
+#video-close,#image-close{
   color: #FFF;
   font-weight: bold;
   font-size: 28px;
@@ -306,34 +310,53 @@ nav li.active a{
   transition: all 0.25s ease-in-out
 }
 
-#modal-close:hover{
+.modal-close:hover{
   background-color: #fff;
   color: rgba(0, 0, 0, 0.9);
 }
 
-#modal-title{
+#modal-title,#image-title{
   color: #FFF;
   max-width: 80%;
   margin: 0;
 }
 
-.modal-open #video-modal{
+.image-modal-open #image-full{
+  max-width: 100%;
+  height: 500px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+.video-modal-open #video-modal, .image-modal-open #image-modal{
   height: auto;
   opacity: 1;
 }
 
-.modal-open #video-iframe{
+.video-modal-open #video-iframe{
   height: 315px;
 }
 
-.modal-open #modal-title{
+.video-modal-open #modal-title{
   margin: 20px 0;
+}
+
+.image-modal-open #image-title{
+  margin: 25px 0;
 }
 
 @media(max-width: 1024px){
   .image-block{
     flex-basis: calc(33.33333% - 30px);
     max-width: calc(33.33333% - 30px);
+  }
+}
+
+@media(max-width: 800px){
+
+  .image-modal-open #image-full{
+    height: 400px;
   }
 }
 
@@ -350,6 +373,10 @@ nav li.active a{
 
   .search-item{
     padding: 10px 0;
+  }
+
+  .image-modal-open #image-full{
+    height: 300px;
   }
 }
 

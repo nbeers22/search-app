@@ -211,12 +211,14 @@ class Image extends Search {
       let description;
       if(element.description){
         description = element.description.substr(0,75);
+      }else if(element.alt_description){
+        description = element.alt_description.substr(0, 75);
       }else{
         description = "Untitled Image"
       }
       imagesHTML += `
         <figure class="image-block">
-          <div class="image-item" style="background-image: url(${element.urls.regular})"></div>
+          <div class="image-item image-result" style="background-image: url(${element.urls.regular})" data-full="${element.urls.full}" data-modal="image-modal" data-title="${description}" title="View full size"></div>
           <p class="image-title">${description}</p>
         </figure>
       `
@@ -265,119 +267,6 @@ class Video extends Search {
   }
 }
 
-class Weather extends Search{
-
-  constructor(){
-    super();
-    this.displayMessage();
-  }
-
-  displayMessage(){
-    let html = '';
-    const search     = document.getElementById('search-results');
-    const numResults = document.getElementById('num-results');
-    const dictionary = document.getElementById('dictionary-result');
-    this.hideDictionary();
-
-    search.innerHTML = '';
-    numResults.innerHTML = '';
-    dictionary.innerHTML = '';
-
-    html = `
-      <h3>Retrieving your current location</h3>
-      <h5>Please allow location services on your browser</h5>
-      <div id="location"></div>
-    `
-
-    search.insertAdjacentHTML('beforeend', html);
-    this.getLocation();
-  }
-
-  getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.getWeatherWithLatLong,this.showError);
-    } else {
-      this.showError("Geolocation is not supported by this browser");
-    }
-  }
-
-  getWeatherWithLatLong(position){
-    let currentWeatherURL = `https://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${config.WEATHER_KEY}`;
-    let fiveDayURL = `https://api.openweathermap.org/data/2.5/forecast/daily?units=imperial&lat=${position.coords.latitude}&lon=${position.coords.longitude}&cnt=5&appid=${config.WEATHER_KEY}`;
-
-    Promise.all([
-      fetch(currentWeatherURL).then(response => response.json()),
-      fetch(fiveDayURL).then(response => response.json())
-      ])
-      .then(responseJSON => {
-        console.log(responseJSON)
-        console.log(responseJSON[0])
-        console.log(responseJSON[1])
-        Weather.showResults(responseJSON[0], responseJSON[1]);
-      });
-
-  }
-
-  static showResults(current,fiveDay){
-    let html = '';
-    const search = document.getElementById('search-results');
-
-    search.innerHTML = '';
-
-    html = `
-      <div class="weather-meta">
-        <h3>${current.name}, ${current.sys.country}</h3>
-        <p><strong>Current Temperature:</strong> ${Math.floor(current.main.temp)}&deg;<br>${current.weather[0].description}</p>
-        <p><strong>H</strong> ${Math.floor(current.main.temp_max)}&deg; / <strong>L</strong> ${Math.floor(current.main.temp_min)}&deg;</p>
-      </div>
-    `;
-
-    search.insertAdjacentHTML('beforeend', html);
-  }
-
-  showError(error){
-    let errorMsg = '';
-    let html     = ''
-    switch (error.code) {
-
-      case error.PERMISSION_DENIED:
-        errorMsg = "<p>User denied the request for Geolocation.</p>"
-        break;
-        
-      case error.POSITION_UNAVAILABLE:
-        errorMsg = "<p>Location information is unavailable.</p>"
-        break;
-
-      case error.TIMEOUT:
-        errorMsg = "<p>The request to get user location timed out.</p>"
-        break;
-
-      case error.UNKNOWN_ERROR:
-        errorMsg = "<p>An unknown error occurred.</p>"
-        break;
-
-      default:
-        errorMsg = error || 'There was an error with the location service.';
-        break;
-    }
-
-    const search = document.getElementById('search-results');
-
-    search.innerHTML = '';
-
-    html = `
-      ${errorMsg}
-      <form id="weather-form">
-        <label for="weather-input">Enter your city or zip code</label>
-        <input type="text" id="weather-input" required>
-        <input id="weather-submit" type="submit" value="Submit">
-      </form>
-    `;
-
-    search.insertAdjacentHTML('beforeend', html);
-  }
-}
-
 function typedText(){
   let options = {
     strings: ["Web Pages", "Images", "Videos", "Weather", "Definitions", "And More!"],
@@ -402,7 +291,10 @@ function eventListeners(){
         navHandler(event.target.dataset.type);
       } else if (event.target.matches('.video-item') || event.target.matches('.video-overlay-play-button')) {
         // Open video modal
-        openModal(event.target.dataset.title, event.target.dataset.embed);
+        openVideoModal(event.target.dataset.title, event.target.dataset.embed);
+      } else if (event.target.matches('.image-result')) {
+        // Open image modal
+        openImageModal(event.target.dataset.title, event.target.dataset.full);
       } else if (event.target.matches('.play-sound')) {
         // play word defintion sound
         let url = document.getElementsByClassName('play-sound')[0].dataset.url;
@@ -470,9 +362,22 @@ function openVideoModal(title, embedURL){
 }
 
 function closeVideoModal(){
-  document.querySelector('body').classList.remove('modal-open');
+  document.querySelector('body').classList.remove('video-modal-open');
   document.getElementById('video-iframe').src = "";
   document.getElementById('video-modal').style.height = 0;
+}
+
+function openImageModal(title, imageURL){
+  document.querySelector('body').classList.add('image-modal-open');
+  document.getElementById('image-title').innerText = title;
+  document.getElementById('image-full').style.backgroundImage = 'url(' + imageURL + ')';
+  document.getElementById('image-modal').style.height = "auto";
+}
+
+function closeImageModal(){
+  document.querySelector('body').classList.remove('modal-open');
+  document.getElementById('image-full').src = '';
+  document.getElementById('image-modal').style.height = 0;
 }
 
 function navHandler(type){

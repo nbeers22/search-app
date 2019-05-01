@@ -11,7 +11,7 @@
   <link rel='icon' href='favicon.ico' type='image/x-icon'/>
 </head>
 <body>
-  <div class="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal-overlay" onclick="closeVideoModal();closeImageModal()"></div>
   <header class="banner" role="banner">
     <div class="container">
       <img src="images/wf-circle-logo-no-letters.png" alt="WebFinder">
@@ -67,7 +67,14 @@
       <h3 id="modal-title"></h3>
       <iframe id="video-iframe" src="" frameborder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <button id="modal-close" onclick="closeModal()">&times;</button>
+        <button id="video-close" onclick="closeVideoModal()">&times;</button>
+    </aside>
+
+    <!-- Image modal -->
+    <aside id="image-modal">
+      <h3 id="image-title"></h3>
+      <div id="image-full"></div>
+      <button id="image-close" onclick="closeImageModal()">&times;</button>
     </aside>
   </main>
 
