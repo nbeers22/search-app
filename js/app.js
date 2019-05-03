@@ -284,6 +284,7 @@ class Video extends Search {
     search.innerHTML     = '';
     numResults.innerHTML = '';
     dictionary.innerHTML = '';
+    
 
     // numResults.innerHTML = `Total results: ${this.results.pageInfo.totalResults}`;
     
