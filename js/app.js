@@ -11,7 +11,7 @@ class Search {
     switch (this.type) {
       case 'page':
       case '':
-        this.url = `https://www.googleapis.com/customsearch/v1?cx=008446815321438153834:5okybrne5hw&q=${this.searchStr}&key=${config.GOOGLE_SEARCH_KEY}`;
+        this.url = `https://www.googleapis.com/customsearch/v1?cx=008446815321438153834:5okybrne5hw&q=${this.searchStr}&start=1&key=${config.GOOGLE_SEARCH_KEY}`;
         break;
 
       case 'image':
@@ -20,10 +20,6 @@ class Search {
 
       case 'video':
         this.url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.searchStr}&key=${config.YOUTUBE_KEY}`;
-        break;
-      
-      case 'weather':
-        let weather = new Weather;
         break;
     }
     if(this.url) this.getResults(this.url);
@@ -38,7 +34,7 @@ class Search {
         switch (this.type) {
           case 'page':
           case '':
-            const page = new Page(data,this.dictionaryURL,this.searchStr);
+            const page = new Page(data,this.dictionaryURL,this.searchStr,this.url);
             page.getDictionaryResults();
             break;
 
@@ -68,12 +64,21 @@ class Search {
 
 class Page extends Search{
 
-  constructor(results,dictionaryURL,searchStr){
+  constructor(results,dictionaryURL,searchStr,url){
     super();
     this.results       = results;
     this.dictionaryURL = dictionaryURL;
     this.searchStr     = searchStr;
+    this.searchURL     = url;
     this.soundURL      = '';
+    this.previousURL   = '';
+
+    this.currentStart = +this.searchURL.split('start=')[1].charAt(0);
+
+    if(this.currentStart !== 1){
+      this.previousURL = `https://www.googleapis.com/customsearch/v1?cx=008446815321438153834:5okybrne5hw&q=${this.searchStr}&start=${this.currentStart - 10}&key=${config.GOOGLE_SEARCH_KEY}`;
+    }
+    this.nextURL = `https://www.googleapis.com/customsearch/v1?cx=008446815321438153834:5okybrne5hw&q=${this.searchStr}&start=${this.currentStart + 10}&key=${config.GOOGLE_SEARCH_KEY}`;
   }
 
   getDictionaryResults() {
@@ -99,59 +104,61 @@ class Page extends Search{
     search.innerHTML     = "";
     numResults.innerHTML = "";
 
-    if (dictionaryResults.length > 0) {
-      document.getElementById('dictionary-result').classList.add('show');
-      let allMeanings = '';
-      let soundImage  = '';
-      let phonetic    = '';
-      let meanings    = dictionaryResults[0].meaning;
+    if(dictionaryResults){
+      if (dictionaryResults.length > 0) {
+        document.getElementById('dictionary-result').classList.add('show');
+        let allMeanings = '';
+        let soundImage  = '';
+        let phonetic    = '';
+        let meanings    = dictionaryResults[0].meaning;
 
-      if (dictionaryResults[0].pronunciation){
-        this.soundURL = dictionaryResults[0].pronunciation;
-        soundImage = `<a href=""><img class="play-sound" data-url="${this.soundURL}" src="images/sound-button.png" alt="Play Sound"></a>`;
-      }
-      
-      if (dictionaryResults[0].phonetic){
-        phonetic = `<p class="phonetic"><small>${dictionaryResults[0].phonetic}</small></p>`;
-      }
-
-      // Get all meanings of word and store in allMeanings
-      Object.keys(meanings).forEach( ele => {
-        let meaning = '';
+        if (dictionaryResults[0].pronunciation){
+          this.soundURL = dictionaryResults[0].pronunciation;
+          soundImage = `<a href=""><img class="play-sound" data-url="${this.soundURL}" src="images/sound-button.png" alt="Play Sound"></a>`;
+        }
         
-        meanings[ele].forEach( result => {
-          meaning += `<li>${result.definition}</li>`;
+        if (dictionaryResults[0].phonetic){
+          phonetic = `<p class="phonetic"><small>${dictionaryResults[0].phonetic}</small></p>`;
+        }
+
+        // Get all meanings of word and store in allMeanings
+        Object.keys(meanings).forEach( ele => {
+          let meaning = '';
+          
+          meanings[ele].forEach( result => {
+            meaning += `<li>${result.definition}</li>`;
+          });
+
+          allMeanings += `
+          <div class="meaning">
+            <p><strong>${ele}</strong></p>
+            <ol>
+              ${meaning}
+            </ol>
+          </div>
+          `
+
         });
 
-        allMeanings += `
-        <div class="meaning">
-          <p><strong>${ele}</strong></p>
-          <ol>
-            ${meaning}
-          </ol>
+        dictionary.insertAdjacentHTML('beforeend',
+          `
+        <div class="dict-flex">
+          ${soundImage}
+          <h2>${this.searchStr}</h2>
         </div>
+        ${phonetic}
+        <div class="meanings">${allMeanings}</div>
+        <p></p>
         `
-
-      });
-
-      dictionary.insertAdjacentHTML('beforeend',
-        `
-      <div class="dict-flex">
-        ${soundImage}
-        <h2>${this.searchStr}</h2>
-      </div>
-      ${phonetic}
-      <div class="meanings">${allMeanings}</div>
-      <p></p>
-      `
-      )
+        )
+      }
     }
 
     // Hide loading gif right before results are populated
     document.getElementsByClassName('loading')[0].classList.toggle('hide');
 
     // Show total results returned
-    numResults.innerHTML = `Total results: ${this.results.searchInformation.formattedTotalResults}`;
+    // numResults.innerHTML = `Total results: ${this.results.searchInformation.formattedTotalResults}`;
     // Display each search result
     this.results.items.forEach( (element,i) => {
       let img = '';
@@ -171,14 +178,46 @@ class Page extends Search{
             </div>
           </div>
         </div>
-      `
+      `;
     });
 
-    search.insertAdjacentHTML('beforeend',searchHTML)
+    search.insertAdjacentHTML('beforeend',searchHTML);
+
+    let previous = '';
+
+    if(this.previousURL){
+      let previous = `<a href="${this.previousURL}" class="previous">&laquo; Previous</a>`;
+    }
+
+    let pagination = `
+      <div class="pagination">
+        ${previous}
+        <a id="next" href="" class="next">Next &raquo;</a>
+      </div>
+    `;
+
+    // search.insertAdjacentHTML('afterend',pagination);
+
+    document.addEventListener( 'click', event => {
+      if(event.target.matches('#next')){
+        this.nextSearch();
+      }
+    })
 
     document.getElementById('results').classList.add('show');
     this.hideLoadingImg();
     scrollToResults();
+  }
+
+  nextSearch(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    fetch(this.nextURL)
+    .then( response => response.json() )
+    .then( responseJSON => {
+      const nextPage = new Page(responseJSON,'','',this.nextURL);
+      nextPage.showResults();
+    });
   }
 
   static playSound(url) {
@@ -205,7 +244,7 @@ class Image extends Search {
     numResults.innerHTML = '';
     dictionary.innerHTML = '';
 
-    numResults.innerHTML = `Total results: ${this.results.total}`;
+    // numResults.innerHTML = `Total results: ${this.results.total}`;
     
     this.results.results.forEach((element, i) => {
       let description;
@@ -246,7 +285,7 @@ class Video extends Search {
     numResults.innerHTML = '';
     dictionary.innerHTML = '';
 
-    numResults.innerHTML = `Total results: ${this.results.pageInfo.totalResults}`;
+    // numResults.innerHTML = `Total results: ${this.results.pageInfo.totalResults}`;
     
     this.results.items.forEach((element, i) => {
       videosHTML += `
@@ -345,9 +384,9 @@ function searchHandler(){
   }
 
 function showFixedNav(){
-    let topNav = document.getElementById('top-nav');
-    topNav.classList.add('open');
-  }
+  let topNav = document.getElementById('top-nav');
+  topNav.classList.add('open');
+}
 
 function hideHeader(){
   let header = document.getElementsByClassName('banner')[0];
@@ -355,7 +394,7 @@ function hideHeader(){
 }
 
 function openVideoModal(title, embedURL){
-  document.querySelector('body').classList.add('modal-open');
+  document.querySelector('body').classList.add('video-modal-open');
   document.getElementById('modal-title').innerText = title;
   document.getElementById('video-iframe').src = embedURL;
   document.getElementById('video-modal').style.height = "auto";
@@ -375,8 +414,8 @@ function openImageModal(title, imageURL){
 }
 
 function closeImageModal(){
-  document.querySelector('body').classList.remove('modal-open');
-  document.getElementById('image-full').src = '';
+  document.querySelector('body').classList.remove('image-modal-open');
+  document.getElementById('image-full').style.backgroundImage = '';
   document.getElementById('image-modal').style.height = 0;
 }
 
