@@ -221,8 +221,8 @@ class Image extends Search {
       }
       imagesHTML += `
         <figure class="image-block">
-          <div class="image-item image-result" style="background-image: url(${element.urls.regular})" data-full="${element.urls.full}" data-modal="image-modal" data-title="${description}" title="View full size"></div>
-          <p class="image-title">${description}</p>
+          <div tabindex="0" class="image-item image-result" style="background-image: url(${element.urls.regular})" data-full="${element.urls.full}" data-modal="image-modal" data-title="${description}" title="View full size"></div>
+          <figcaption class="image-title">${description}</figcaption>
         </figure>
       `
     });
@@ -251,13 +251,13 @@ class Video extends Search {
     this.results.items.forEach((element, i) => {
       videosHTML += `
         <figure class="image-block video-block">
-          <div class="image-item video-item" data-modal="video-modal" data-embed="https://www.youtube.com/embed/${element.id.videoId}" data-title="${element.snippet.title}" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url(${element.snippet.thumbnails.high.url});">
+          <div tabindex="0" class="image-item video-item" data-modal="video-modal" data-embed="https://www.youtube.com/embed/${element.id.videoId}" data-title="${element.snippet.title}" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url(${element.snippet.thumbnails.high.url});">
             <svg data-modal="video-modal" data-embed="https://www.youtube.com/embed/${element.id.videoId}" data-title="${element.snippet.title}" class="video-overlay-play-button" viewBox="0 0 200 200" alt="Play video" id="play-video">
               <circle cx="100" cy="100" r="90" fill="none" stroke-width="15" stroke="#FFF"/>
               <polygon points="70, 55 70, 145 145, 100" fill="#FFF"/>
             </svg>
           </div>
-          <p class="image-title">${element.snippet.title}</p>
+          <figcaption class="image-title">${element.snippet.title}</figcaption>
         </figure>
       `
     });
@@ -302,6 +302,24 @@ function eventListeners(){
       }
 
     }, false);
+
+    // For keyboard users who use keyboard instead of click
+    document.addEventListener('keyup', event => {
+      if(event.keyCode === 13) {
+        if(event.target.matches('.image-result')){
+          openImageModal(event.target.dataset.title, event.target.dataset.full);
+        } else if (event.target.matches('.video-item') || event.target.matches('.video-overlay-play-button')) {
+          openVideoModal(event.target.dataset.title, event.target.dataset.embed);
+        } else if (event.target.children[0].matches('.play-sound')) {
+          // play word defintion sound
+          let url = document.getElementsByClassName('play-sound')[0].dataset.url;
+          Page.playSound(url);
+        }
+      } else if(event.key === "Escape"){
+        closeVideoModal();
+        closeImageModal();
+      }
+    })
   }
 
 function searchHandler(){
