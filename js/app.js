@@ -183,48 +183,15 @@ class Page extends Search{
 
     search.insertAdjacentHTML('beforeend',searchHTML);
 
-    let previous = '';
-
-    if(this.previousURL){
-      let previous = `<a href="${this.previousURL}" class="previous">&laquo; Previous</a>`;
-    }
-
-    let pagination = `
-      <div class="pagination">
-        ${previous}
-        <a id="next" href="" class="next">Next &raquo;</a>
-      </div>
-    `;
-
-    // search.insertAdjacentHTML('afterend',pagination);
-
-    document.addEventListener( 'click', event => {
-      if(event.target.matches('#next')){
-        this.nextSearch();
-      }
-    })
-
     document.getElementById('results').classList.add('show');
     this.hideLoadingImg();
     scrollToResults();
-  }
-
-  nextSearch(){
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    fetch(this.nextURL)
-    .then( response => response.json() )
-    .then( responseJSON => {
-      const nextPage = new Page(responseJSON,'','',this.nextURL);
-      nextPage.showResults();
-    });
   }
 
   static playSound(url) {
     var audio = new Audio(url);
     audio.play();
   }
-  
 }
 
 class Image extends Search {
@@ -241,11 +208,8 @@ class Image extends Search {
     const dictionary = document.getElementById('dictionary-result');
 
     search.innerHTML     = '';
-    numResults.innerHTML = '';
     dictionary.innerHTML = '';
 
-    // numResults.innerHTML = `Total results: ${this.results.total}`;
-    
     this.results.results.forEach((element, i) => {
       let description;
       if(element.description){
@@ -282,11 +246,8 @@ class Video extends Search {
     const dictionary = document.getElementById('dictionary-result');
 
     search.innerHTML     = '';
-    numResults.innerHTML = '';
     dictionary.innerHTML = '';
 
-    // numResults.innerHTML = `Total results: ${this.results.pageInfo.totalResults}`;
-    
     this.results.items.forEach((element, i) => {
       videosHTML += `
         <figure class="image-block video-block">
