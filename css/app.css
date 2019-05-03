@@ -94,6 +94,12 @@ form label{
   display: none;
 }
 
+.search-title{
+  margin-bottom: 20px;
+  display: inline-block;
+  font-size: 1.125rem;
+}
+
 .search-nav{
   position: fixed;
   top: -75px;

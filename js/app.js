@@ -114,7 +114,7 @@ class Page extends Search{
 
         if (dictionaryResults[0].pronunciation){
           this.soundURL = dictionaryResults[0].pronunciation;
-          soundImage = `<a href=""><img class="play-sound" data-url="${this.soundURL}" src="images/sound-button.png" alt="Play Sound"></a>`;
+          soundImage = `<a href="" id="sound-link"><img class="play-sound" data-url="${this.soundURL}" src="images/sound-button.png" alt="Play Sound"></a>`;
         }
         
         if (dictionaryResults[0].phonetic){
@@ -169,7 +169,7 @@ class Page extends Search{
       }
       searchHTML += `
         <div class="search-item">
-          <a href="${element.link}" target="_blank"><h3 class="search-title">${element.htmlTitle}</h3></a>
+          <a href="${element.link}" class="search-title" target="_blank">${element.htmlTitle}</a>
           <article class="search-meta">
             ${img}
             <div class="text-result">
@@ -310,7 +310,7 @@ function eventListeners(){
           openImageModal(event.target.dataset.title, event.target.dataset.full);
         } else if (event.target.matches('.video-item') || event.target.matches('.video-overlay-play-button')) {
           openVideoModal(event.target.dataset.title, event.target.dataset.embed);
-        } else if (event.target.children[0].matches('.play-sound')) {
+        } else if (event.target.matches('#sound-link')) {
           // play word defintion sound
           let url = document.getElementsByClassName('play-sound')[0].dataset.url;
           Page.playSound(url);
