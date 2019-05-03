@@ -299,6 +299,8 @@ function eventListeners(){
         // play word defintion sound
         let url = document.getElementsByClassName('play-sound')[0].dataset.url;
         Page.playSound(url);
+      } else if(event.target.matches('.search-title')){
+        location.href = event.target.href;
       }
 
     }, false);
